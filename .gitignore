@@ -1,0 +1,5 @@
+bin/
+logs/
+modules/
+stage/
+zzz-*.*

@@ -1,0 +1,42 @@
+---
+- name: Create Static Website
+  hosts: all
+  gather_facts: no
+  connection: local
+
+  tasks:
+    - name: debug stack name
+      debug:
+        msg:
+          - "{{ stack_prefix }}"
+      register: StackName
+      tags:
+        - create
+
+    - name: Create the Static website
+      cloudformation:
+        stack_name: "{{ stack_prefix }}"
+        region: "{{ aws.region }}"
+        state: present
+        disable_rollback: true
+        template: "../../../templates/cloudformation/static-website.yaml"
+        template_parameters:
+          RootDomainName: "{{ website }}"
+      tags:
+      - create
+
+    - name: Deleting the bucket s3://{{ website }}
+      shell: >
+        aws s3 rb s3://{{ website }} --force  
+      register: author_publish_zone_id
+      ignore_errors: yes
+      tags:
+        - delete
+
+    - name: Delete the Static website
+      cloudformation:
+        stack_name: "{{ stack_prefix }}"
+        region: "{{ aws.region }}"
+        state: absent
+      tags:
+      - delete
