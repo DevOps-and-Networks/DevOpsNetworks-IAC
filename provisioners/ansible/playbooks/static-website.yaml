@@ -1,7 +1,7 @@
 ---
 - name: Create Static Website
   hosts: all
-  gather_facts: no
+  gather_facts: false
   connection: local
 
   tasks:
@@ -23,13 +23,13 @@
         template_parameters:
           RootDomainName: "{{ website }}"
       tags:
-      - create
+        - create
 
     - name: Deleting the bucket s3://{{ website }}
       shell: >
-        aws s3 rb s3://{{ website }} --force  
+        aws s3 rb s3://{{ website }} --force
       register: author_publish_zone_id
-      ignore_errors: yes
+      ignore_errors: true
       tags:
         - delete
 
@@ -39,4 +39,4 @@
         region: "{{ aws.region }}"
         state: absent
       tags:
-      - delete
+        - delete

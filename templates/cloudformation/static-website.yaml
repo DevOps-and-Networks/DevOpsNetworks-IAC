@@ -1,3 +1,4 @@
+---
 Parameters:
   RootDomainName:
     Description: Domain name for your website (devopsnetworks.com)
@@ -41,8 +42,8 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub
-          - www.${Domain}
-          - Domain: !Ref RootDomainName
+        - www.${Domain}
+        - Domain: !Ref RootDomainName
       AccessControl: BucketOwnerFullControl
       WebsiteConfiguration:
         RedirectAllRequestsTo:
@@ -65,25 +66,25 @@ Resources:
   myDNS:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneName: !Sub 
-          - ${Domain}.
-          - Domain: !Ref RootDomainName
+      HostedZoneName: !Sub
+        - ${Domain}.
+        - Domain: !Ref RootDomainName
       Comment: Zone apex alias.
       RecordSets:
-      - 
-        Name: !Ref RootDomainName
-        Type: A
-        AliasTarget:
-          HostedZoneId: !FindInMap [ RegionMap, !Ref 'AWS::Region', S3hostedzoneID]
-          DNSName: !FindInMap [ RegionMap, !Ref 'AWS::Region', websiteendpoint]
-      -
-        Name: !Sub
+        -
+          Name: !Ref RootDomainName
+          Type: A
+          AliasTarget:
+            HostedZoneId: !FindInMap [RegionMap, !Ref 'AWS::Region', S3hostedzoneID]
+            DNSName: !FindInMap [RegionMap, !Ref 'AWS::Region', websiteendpoint]
+        -
+          Name: !Sub
             - www.${Domain}
             - Domain: !Ref RootDomainName
-        Type: CNAME
-        TTL: 900
-        ResourceRecords:
-        - !GetAtt WWWBucket.DomainName
+          Type: CNAME
+          TTL: 900
+          ResourceRecords:
+            - !GetAtt WWWBucket.DomainName
 Outputs:
   WebsiteURL:
     Value: !GetAtt RootBucket.WebsiteURL

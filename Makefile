@@ -35,9 +35,9 @@ lint:
 	 yamllint \
 	   conf/ansible/inventory/group_vars/*.yaml \
 	   provisioners/ansible/playbooks/*.yaml \
-	   templates/cloudformation/*.yaml \
+	   templates/cloudformation/*.yaml
 	shellcheck scripts/*.sh
-	for playbook in provisioners/ansible/playbooks/*/*.yaml; do \
+	for playbook in provisioners/ansible/playbooks/*.yaml; do \
 		ANSIBLE_LIBRARY=conf/ansible/library ansible-playbook -vvv $$playbook --syntax-check; \
 	done
 	
